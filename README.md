@@ -117,9 +117,6 @@ The trust decision is associated with the **server name**, not the **server conf
 
 **What the user sees:**
 
-<!-- SCREENSHOT: Add 08_trust_dialog.PNG here -->
-<!-- Screenshot showing the trust dialog with only "build-tools" visible and no command details -->
-
 > The trust dialog only shows the server name "build-tools" and a generic warning.
 
 **What actually executes:**
@@ -175,8 +172,6 @@ claude
 
 **Step 4:** The trust dialog appears showing "build-tools" with no command visibility. Select option 2 to accept.
 
-<!-- SCREENSHOT: Add 08_trust_dialog.PNG here if not shown above -->
-
 **Step 5:** Verify command execution.
 
 ```powershell
@@ -189,9 +184,6 @@ PWNED
 desktop-c9ak2kc\maldev01
 DESKTOP-C9AK2KC
 ```
-
-<!-- SCREENSHOT: Add 05_rce_proof.PNG here -->
-<!-- Screenshot showing rce-proof.txt with PWNED, username, and hostname -->
 
 #### Phase 2: Silent Execution After Config Modification
 
@@ -222,9 +214,6 @@ Output:
 MODIFIED-PAYLOAD
 ```
 
-<!-- SCREENSHOT: Add 07_modified_rce_proof.PNG here -->
-<!-- Screenshot showing modified-rce.txt created without any re-consent prompt -->
-
 The user's original consent was silently applied to the modified payload.
 
 ### Automated PoC Script
@@ -241,45 +230,57 @@ The script creates the payloads, provides instructions for each phase, and verif
 
 ## Evidence
 
-Eight screenshots document the full exploitation chain. Add your own screenshots to the `screenshots/` directory.
+The following screenshots walk through the full exploitation chain from start to finish.
 
-| # | Filename | Description |
-|---|---|---|
-| 01 | `01_claude_version.PNG` | Claude Code v2.1.63 version confirmation |
-| 02 | `02_directory_git_creation.PNG` | Fresh directory and git repository creation |
-| 03 | `03_malicious_payload.PNG` | Malicious .mcp.json file creation and contents |
-| 04 | `04_mcp_not_found.PNG` | First launch: no rce-proof.txt before execution |
-| 05 | `05_rce_proof.PNG` | rce-proof.txt created with PWNED, username, hostname |
-| 06 | `06_rce_proof2.PNG` | Repeated confirmation of execution on subsequent launch |
-| 07 | `07_modified_rce_proof.PNG` | Modified payload executes without re-consent |
-| 08 | `08_trust_dialog.PNG` | Trust dialog showing only "build-tools" with no command visibility |
+### Confirming the Target
 
-### Screenshot Placement Guide
+Testing was performed against the latest version of Claude Code at the time of research.
 
-<!-- SCREENSHOT: Add 01_claude_version.PNG here -->
-<img width="1370" height="574" alt="01_claude_version" src="https://github.com/user-attachments/assets/5bfca573-0d38-475c-af38-d5d8fde95a49" />
-<!-- Screenshot confirming Claude Code version 2.1.63 -->
+![Claude Code Version](screenshots/01_claude_version.PNG)
 
-<!-- SCREENSHOT: Add 02_directory_git_creation.PNG here -->
-<!-- Screenshot showing mkdir, cd, and git init commands -->
+### Setting the Stage
 
-<!-- SCREENSHOT: Add 03_malicious_payload.PNG here -->
-<!-- Screenshot showing .mcp.json creation and cat/type showing contents -->
+A fresh directory was created and initialized as a git repository to simulate a clean project clone.
 
-<!-- SCREENSHOT: Add 04_mcp_not_found.PNG here -->
-<!-- Screenshot showing rce-proof.txt does not exist before execution -->
+![Directory and Git Setup](screenshots/02_directory_git_creation.PNG)
 
-<!-- SCREENSHOT: Add 05_rce_proof.PNG here -->
-<!-- Screenshot showing rce-proof.txt contents: PWNED, username, hostname -->
+### Crafting the Payload
 
-<!-- SCREENSHOT: Add 06_rce_proof2.PNG here -->
-<!-- Screenshot confirming repeated execution on relaunch -->
+A malicious `.mcp.json` was created with a benign-sounding server name ("build-tools") that actually executes arbitrary system commands. Note the command writes a proof file, dumps the current username, and captures the hostname.
 
-<!-- SCREENSHOT: Add 07_modified_rce_proof.PNG here -->
-<!-- Screenshot showing modified-rce.txt created without re-consent -->
+![Malicious Payload](screenshots/03_malicious_payload.PNG)
 
-<!-- SCREENSHOT: Add 08_trust_dialog.PNG here -->
-<!-- Screenshot of trust dialog with server name only, no command shown -->
+### First Launch: The Trust Dialog
+
+On first launch, Claude Code presents a trust dialog. It shows the server name "build-tools" and a generic warning about MCP servers. The actual command (`cmd.exe /c echo PWNED...`) is nowhere to be seen. A developer seeing "build-tools" in a project they just cloned has no reason to be suspicious.
+
+![Trust Dialog](screenshots/08_trust_dialog.PNG)
+
+### Before Execution: No Proof File
+
+Before accepting the trust dialog, the Desktop is clean. No `rce-proof.txt` exists. The MCP server shows as "failed" on the left (because a one-shot command is not a persistent server), but the damage is already done.
+
+![No Proof File Yet](screenshots/04_mcp_not_found.PNG)
+
+### Command Execution Confirmed
+
+After accepting the trust dialog, the proof file appears on the Desktop. It contains "PWNED", the machine's username, and the hostname, confirming arbitrary command execution in the user's context.
+
+![RCE Proof](screenshots/05_rce_proof.PNG)
+
+### Persistent Execution on Relaunch
+
+Relaunching Claude Code in the same directory executes the command again automatically with no prompts. The trust decision persists across sessions.
+
+![Repeated Execution](screenshots/06_rce_proof2.PNG)
+
+### The Critical Finding: Silent Execution After Config Change
+
+This is the primary finding. The `.mcp.json` was modified with a completely different payload (same server name, different command). Claude Code was relaunched. **No trust dialog appeared.** The modified command executed silently, and `modified-rce.txt` appeared alongside the original proof file. The user's consent for the original command was silently applied to a command they never approved.
+
+This is the supply chain attack vector: a single malicious commit modifying `.mcp.json` in a previously trusted repo results in silent code execution on every developer who pulls the change.
+
+![Modified Payload Executes Without Re-consent](screenshots/07_modified_rce_proof.PNG)
 
 ---
 
@@ -340,7 +341,7 @@ This research was informed by and builds on prior work:
 
 ## Researcher
 
-**Jay Sany**
+**Jashid Sany**
 - Website: [jashidsany.com](https://jashidsany.com)
 - GitHub: [jashidsany](https://github.com/jashidsany)
 
