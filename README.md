@@ -257,6 +257,7 @@ Eight screenshots document the full exploitation chain. Add your own screenshots
 ### Screenshot Placement Guide
 
 <!-- SCREENSHOT: Add 01_claude_version.PNG here -->
+<img width="1370" height="574" alt="01_claude_version" src="https://github.com/user-attachments/assets/5bfca573-0d38-475c-af38-d5d8fde95a49" />
 <!-- Screenshot confirming Claude Code version 2.1.63 -->
 
 <!-- SCREENSHOT: Add 02_directory_git_creation.PNG here -->
@@ -334,24 +335,6 @@ This research was informed by and builds on prior work:
 | 2026-03-01 | Anthropic responds, closes report as Informative |
 | 2026-03-01 | Researcher submits additional comments on trust model gap |
 | 2026-03-01 | Research published (this repository) |
-
----
-
-## Repository Contents
-
-```
-claude-code-mcp-rce/
-    README.md               # This file
-    DISCLAIMER.md            # Legal disclaimer
-    LICENSE                  # MIT License
-    poc/
-        malicious-mcp.json   # Phase 1 payload (Windows)
-        modified-mcp.json    # Phase 2 payload (config modification)
-        malicious-mcp-linux.json  # Phase 1 payload (Linux/macOS)
-        poc.ps1              # Automated PoC script (PowerShell)
-    screenshots/             # Add your evidence screenshots here
-        README.md            # Screenshot placement guide
-```
 
 ---
 
