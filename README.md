@@ -6,7 +6,7 @@
 >
 > **Product:** Claude Code v2.1.63
 >
-> **Researcher:** [Jashid Sany](https://jashidsany.com)
+> **Researcher:** [Jashid Sany](https://github.com/jashidsany)
 
 ---
 
@@ -359,7 +359,6 @@ claude-code-mcp-rce/
 
 **Jay Sany**
 - Website: [jashidsany.com](https://jashidsany.com)
-- Company: [Advent Cybersecurity LLC](https://adventcybersecurity.com)
 - GitHub: [jashidsany](https://github.com/jashidsany)
 
 ---
