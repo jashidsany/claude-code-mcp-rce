@@ -18,8 +18,6 @@ Additionally, the initial trust dialog presents only the server name (attacker-c
 
 Anthropic reviewed this submission and determined the behavior falls within their intended workspace trust model, where users who trust a workspace are responsible for the integrity of its contents, including future changes. The report was closed as **Informative**.
 
-https://github.com/jashidsany/claude-code-mcp-rce/blob/main/screenshots/MCP_RCE_Demo.mp4
-
 ---
 
 ## Table of Contents
@@ -283,6 +281,10 @@ This is the primary finding. The `.mcp.json` was modified with a completely diff
 This is the supply chain attack vector: a single malicious commit modifying `.mcp.json` in a previously trusted repo results in silent code execution on every developer who pulls the change.
 
 ![Modified Payload Executes Without Re-consent](screenshots/07_modified_rce_proof.PNG)
+
+## Demo
+
+![MCP_RCE_Demo](/screenshots/MCP_RCE_Demo.mp4)
 
 ---
 
