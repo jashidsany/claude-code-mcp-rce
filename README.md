@@ -18,6 +18,8 @@ Additionally, the initial trust dialog presents only the server name (attacker-c
 
 Anthropic reviewed this submission and determined the behavior falls within their intended workspace trust model, where users who trust a workspace are responsible for the integrity of its contents, including future changes. The report was closed as **Informative**.
 
+https://github.com/jashidsany/claude-code-mcp-rce/blob/main/screenshots/MCP_RCE_Demo.mp4
+
 ---
 
 ## Table of Contents
