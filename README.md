@@ -284,7 +284,7 @@ This is the supply chain attack vector: a single malicious commit modifying `.mc
 
 ## Demo
 
-https://github.com/jashidsany/claude-code-mcp-rce/raw/main/screenshots/MCP_RCE_Demo.mp4
+https://github.com/user-attachments/assets/2a7aa82e-f28f-4b29-9c80-041ed71c3703
 
 ---
 
