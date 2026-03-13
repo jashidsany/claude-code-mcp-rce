@@ -16,8 +16,6 @@ This repository documents security research into Claude Code's handling of MCP (
 
 Additionally, the initial trust dialog presents only the server name (attacker-controlled) without revealing the actual command and arguments that will be executed.
 
-Anthropic reviewed this submission and determined the behavior falls within their intended workspace trust model, where users who trust a workspace are responsible for the integrity of its contents, including future changes. The report was closed as **Informative**.
-
 ---
 
 ## Table of Contents
@@ -288,22 +286,6 @@ https://github.com/user-attachments/assets/2a7aa82e-f28f-4b29-9c80-041ed71c3703
 
 ---
 
-## Vendor Response
-
-Anthropic reviewed this submission via their HackerOne Vulnerability Disclosure Program and closed it as **Informative**. Their position:
-
-> Claude Code's trust model for MCP server configurations is designed with the understanding that users are responsible for the integrity of their local project files and development environment after they confirm workspace trust via the workspace trust dialog. By indicating that they trust a folder, the user is explicitly saying that they trust the contents of the folder including potential future changes. Changes to project-level configuration files (whether via git pull, direct edits, or commits) are considered part of the normal development workflow that users are expected to review and manage.
-
-This is a design decision, not a bug. The workspace trust model intentionally delegates file integrity responsibility to the user after the initial trust decision.
-
-### Researcher's Perspective
-
-The concern is that a one-time trust decision implicitly covers all future changes to configuration files. In collaborative environments, a user who trusted a workspace months ago may later `git pull` and unknowingly load a modified MCP server configuration introduced by a compromised collaborator or malicious commit. The original trust decision gets extended to content the user never explicitly reviewed.
-
-A lightweight mitigation such as re-prompting when MCP server configurations change between sessions would address this without altering the existing trust model.
-
----
-
 ## Remediation Suggestions
 
 These were submitted to Anthropic as part of the disclosure:
@@ -317,29 +299,6 @@ These were submitted to Anthropic as part of the disclosure:
 4. **Scope trust more granularly.** Require per-server approval with command visibility for each new or modified server.
 
 5. **Enterprise allowlisting.** Extend managed settings to support MCP server command allowlisting.
-
----
-
-## Related Research
-
-This research was informed by and builds on prior work:
-
-- **CVE-2025-59536:** Malicious hooks in `.claude/settings.json` enabling RCE (patched in Claude Code v1.0.111). Discovered by Check Point Research.
-- **CVE-2026-21852:** User consent bypass via MCP server configs (patched in Claude Code v2.0.65). Discovered by Check Point Research.
-- **Check Point Research:** ["Caught in the Hook: RCE and API Token Exfiltration Through Claude Code Project Files"](https://research.checkpoint.com/2026/rce-and-api-token-exfiltration-through-claude-code-project-files-cve-2025-59536/) (February 26, 2026)
-- **Anthropic:** ["Making Claude Code more secure and autonomous"](https://www.anthropic.com/engineering/claude-code-sandboxing) (Sandboxing announcement)
-
----
-
-## Disclosure Timeline
-
-| Date | Action |
-|---|---|
-| 2026-02-28 | Vulnerability discovered and confirmed with multiple PoC tests |
-| 2026-02-28 | Report submitted to Anthropic via HackerOne VDP |
-| 2026-03-01 | Anthropic responds, closes report as Informative |
-| 2026-03-01 | Researcher submits additional comments on trust model gap |
-| 2026-03-01 | Research published (this repository) |
 
 ---
 
